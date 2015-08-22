@@ -3,7 +3,7 @@
 # http://localhost:4567/publish.json?channel=tm&message=hello
 #
 # To run it as a daemon
-# nohup ruby server.rb >> /var/log/server.log 2>&1 &
+# nohup ruby server.rb >> server.log 2>&1 &
 #
 
 require 'sinatra'
