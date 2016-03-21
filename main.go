@@ -37,5 +37,5 @@ func main() {
 	commitC, errorC := newRaftNode(*id, strings.Split(*cluster, ","), *join, proposeC, confChangeC)
 
 	// the key-value http handler will propose updates to raft
-	serveHttpKVAPI(*kvport, proposeC, confChangeC, commitC, errorC)
+	serveHttpKVAPI(*kvport, proposeC, confChangeC, commitC, errorC, id)
 }

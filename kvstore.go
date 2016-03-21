@@ -42,10 +42,17 @@ type kv struct {
 	Val string
 }
 
-func newKVStore(proposeC chan<- string, commitC <-chan *string, errorC <-chan error) *bstalk {
-	//var c beanstalk.Conn
+func newKVStore(proposeC chan<- string, commitC <-chan *string, errorC <-chan error, id *int) *bstalk {
+	var c *beanstalk.Conn
 	//var err error
-	c, _ := beanstalk.Dial("tcp", "127.0.0.1:11300")
+
+//	if (*id == 1) {
+//		log.Printf("connecting to remote beanstalkd")
+//		c, _ = beanstalk.Dial("tcp", "172.21.140.160:11300")
+//	} else {
+//		log.Printf("connecting to local")
+		c, _ = beanstalk.Dial("tcp", "127.0.0.1:11300")
+//	}
 	s := &bstalk{proposeC: proposeC, conn: c}
 	// replay log into key-value map
 	s.readCommits(commitC, errorC)
