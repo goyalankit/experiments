@@ -1,5 +1,20 @@
 # experiments
 
+This is a POC for making beanstalk distributed. The key-value store has been modified to use beanstalk. Only put and get operation is added. Some values are hardcoded so not a good starting point for an actual implemenatation
+
+```sh
+# to put a job in default queue
+curl -L http://127.0.0.1:12380/put -XPUT -d "THIS IS SPARTA 12"
+
+# to get back the job from default queue. reserve + delete.
+curl -L http://127.0.0.1:12380/get
+```
+
+- Note `get` here is implemented as a write, which means it will run on all the replicas. 
+- It requires three different beanstalkd instances running on `1234`, `2234` and `3234`.
+- It uses Go beanstalk library(https://github.com/kr/beanstalk) to talk to beantalk =
+
+
 # raftexample
 
 raftexample is an example usage of etcd's [raft library](../../raft). It provides a simple REST API for a key-value store cluster backed by the [Raft][raft] consensus algorithm.
