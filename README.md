@@ -3,6 +3,15 @@
 This is a POC for making beanstalk distributed. The key-value store has been modified to use beanstalk. Only put and get operations are added. Some values are hardcoded and this was put together in an hour with no go knowledge to start with. so not a good starting point for an actual implemenatation,
 
 ```sh
+#Example commands to start a cluster of 3 nodes
+
+./raftexample --id 1 --cluster http://127.0.0.1:12379,http://127.0.0.1:22379,http://127.0.0.1:32379 --port 12380
+./raftexample --id 2 --cluster http://127.0.0.1:12379,http://127.0.0.1:22379,http://127.0.0.1:32379 --port 22380
+./raftexample --id 3 --cluster http://127.0.0.1:12379,http://127.0.0.1:22379,http://127.0.0.1:32379 --port 32380
+```
+
+
+```sh
 # to put a job in default queue
 curl -L http://127.0.0.1:12380/put -XPUT -d "THIS IS SPARTA 12"
 
