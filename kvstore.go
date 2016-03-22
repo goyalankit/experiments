@@ -46,13 +46,16 @@ func newKVStore(proposeC chan<- string, commitC <-chan *string, errorC <-chan er
 	var c *beanstalk.Conn
 	//var err error
 
-//	if (*id == 1) {
-//		log.Printf("connecting to remote beanstalkd")
-//		c, _ = beanstalk.Dial("tcp", "172.21.140.160:11300")
-//	} else {
-//		log.Printf("connecting to local")
-		c, _ = beanstalk.Dial("tcp", "127.0.0.1:11300")
-//	}
+	if (*id == 1) {
+		log.Printf("connecting to remote beanstalkd")
+		c, _ = beanstalk.Dial("tcp", "127.0.0.1:1234")
+	} else if (*id == 2) {
+		log.Printf("connecting to remote beanstalkd")
+		c, _ = beanstalk.Dial("tcp", "127.0.0.1:2234")
+	} else {
+		log.Printf("connecting to local")
+		c, _ = beanstalk.Dial("tcp", "127.0.0.1:3234")
+	}
 	s := &bstalk{proposeC: proposeC, conn: c}
 	// replay log into key-value map
 	s.readCommits(commitC, errorC)
@@ -64,13 +67,18 @@ func newKVStore(proposeC chan<- string, commitC <-chan *string, errorC <-chan er
 func (s *bstalk) Lookup(key string) (string, bool) {
 	s.mu.RLock()
 	log.Printf("Beanstalk GET command")
+	var buf bytes.Buffer
+	if err := gob.NewEncoder(&buf).Encode(kv{key, ""}); err != nil {
+		log.Fatal(err)
+	}
+	s.proposeC <- string(buf.Bytes())
 
-	id, body, _ := s.conn.Reserve(0)
-	s.conn.Delete(id)
-	log.Printf("Beanstalk GET command completed for %s", string(body))
-	s.mu.RUnlock()
+	//id, body, _ := s.conn.Reserve(0)
+	//s.conn.Delete(id)
+	//log.Printf("Beanstalk GET command completed for %s", string(body))
+	//s.mu.RUnlock()
 	ok := true
-	return string(body[:]), ok
+	return "", ok
 }
 
 func (s *bstalk) Propose(k string, v string) {
@@ -94,8 +102,15 @@ func (s *bstalk) readCommits(commitC <-chan *string, errorC <-chan error) {
 			log.Fatalf("raftexample: could not decode message (%v)", err)
 		}
 		s.mu.Lock()
-		log.Printf("Beanstalk put command with data %s", data_kv.Val)
-		s.conn.Put([]byte(data_kv.Val), 1, 0, 0)
+		log.Printf("ACCTION ==  %s", data_kv.Action)
+		if (data_kv.Action == "/put") {
+			log.Printf("Beanstalk put command with data %s", data_kv.Val)
+			s.conn.Put([]byte(data_kv.Val), 1, 0, 0)
+		} else {
+			id, body, _ := s.conn.Reserve(0)
+			s.conn.Delete(id)
+			log.Printf("Beanstalk GET command completed for %s", string(body))
+		}
 		s.mu.Unlock()
 	}
 	if err, ok := <-errorC; ok {
