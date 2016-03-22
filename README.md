@@ -1,6 +1,6 @@
 # experiments
 
-This is a POC for making beanstalk distributed. The key-value store has been modified to use beanstalk. Only put and get operations are added. Some values are hardcoded so not a good starting point for an actual implemenatation
+This is a POC for making beanstalk distributed. The key-value store has been modified to use beanstalk. Only put and get operations are added. Some values are hardcoded and this was put together in an hour with no go knowledge to start with. so not a good starting point for an actual implemenatation,
 
 ```sh
 # to put a job in default queue
