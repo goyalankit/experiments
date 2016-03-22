@@ -1,6 +1,6 @@
 # experiments
 
-This is a POC for making beanstalk distributed. The key-value store has been modified to use beanstalk. Only put and get operation is added. Some values are hardcoded so not a good starting point for an actual implemenatation
+This is a POC for making beanstalk distributed. The key-value store has been modified to use beanstalk. Only put and get operations are added. Some values are hardcoded so not a good starting point for an actual implemenatation
 
 ```sh
 # to put a job in default queue
@@ -14,6 +14,11 @@ curl -L http://127.0.0.1:12380/get
 - It requires three different beanstalkd instances running on `1234`, `2234` and `3234`.
 - It uses Go beanstalk library(https://github.com/kr/beanstalk) to talk to beantalk =
 
+
+
+Original Read me starts here
+===
+---------------------------------------------------------------------------
 
 # raftexample
 
